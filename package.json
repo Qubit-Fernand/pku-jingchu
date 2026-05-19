@@ -7,7 +7,7 @@
   "repository": "Qubit-Fernand/pku-jingchu",
   "license": "MIT",
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev",
