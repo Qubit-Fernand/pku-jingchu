@@ -12,6 +12,16 @@ import {
   navigationLinks
 } from './config'
 
+function normalizeBlockIds(recordMap: ExtendedRecordMap): ExtendedRecordMap {
+  for (const [blockId, blockRecord] of Object.entries(recordMap.block || {})) {
+    if (blockRecord?.value && !blockRecord.value.id) {
+      blockRecord.value.id = blockId
+    }
+  }
+
+  return recordMap
+}
+
 const getNavigationLinkPages = pMemoize(
   async (): Promise<ExtendedRecordMap[]> => {
     const navigationLinkPageIds = (navigationLinks || [])
@@ -63,7 +73,7 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
 
   recordMap = rewriteNotionPdfUrls(recordMap, pageId)
 
-  return recordMap
+  return normalizeBlockIds(recordMap)
 }
 
 export async function search(params: SearchParams): Promise<SearchResults> {
