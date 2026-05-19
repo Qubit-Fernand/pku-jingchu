@@ -12,7 +12,20 @@ import {
   navigationLinks
 } from './config'
 
-function normalizeBlockIds(recordMap: ExtendedRecordMap): ExtendedRecordMap {
+function normalizeRecordValues(records?: Record<string, any>) {
+  for (const [recordId, record] of Object.entries(records || {})) {
+    if (record?.value?.value) {
+      records![recordId] = record.value
+    }
+  }
+}
+
+function normalizeRecordMap(recordMap: ExtendedRecordMap): ExtendedRecordMap {
+  normalizeRecordValues(recordMap.block)
+  normalizeRecordValues(recordMap.collection)
+  normalizeRecordValues(recordMap.collection_view)
+  normalizeRecordValues(recordMap.notion_user)
+
   for (const [blockId, blockRecord] of Object.entries(recordMap.block || {})) {
     if (blockRecord?.value && !blockRecord.value.id) {
       blockRecord.value.id = blockId
@@ -32,12 +45,14 @@ const getNavigationLinkPages = pMemoize(
       return pMap(
         navigationLinkPageIds,
         async (navigationLinkPageId) =>
-          notion.getPage(navigationLinkPageId, {
-            chunkLimit: 1,
-            fetchMissingBlocks: false,
-            fetchCollections: false,
-            signFileUrls: false
-          }),
+          notion
+            .getPage(navigationLinkPageId, {
+              chunkLimit: 1,
+              fetchMissingBlocks: false,
+              fetchCollections: false,
+              signFileUrls: false
+            })
+            .then(normalizeRecordMap),
         {
           concurrency: 4
         }
@@ -49,7 +64,7 @@ const getNavigationLinkPages = pMemoize(
 )
 
 export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
-  let recordMap = await notion.getPage(pageId)
+  let recordMap = normalizeRecordMap(await notion.getPage(pageId))
 
   if (navigationStyle !== 'default') {
     // ensure that any pages linked to in the custom navigation header have
@@ -73,7 +88,7 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
 
   recordMap = rewriteNotionPdfUrls(recordMap, pageId)
 
-  return normalizeBlockIds(recordMap)
+  return normalizeRecordMap(recordMap)
 }
 
 export async function search(params: SearchParams): Promise<SearchResults> {
