@@ -7,12 +7,16 @@
   "repository": "Qubit-Fernand/pku-jingchu",
   "license": "MIT",
   "engines": {
-    "node": "24.x"
+    "node": ">=22.13.0"
   },
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
+    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
+    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "dev:vercel": "next dev",
+    "build:vercel": "next build --webpack",
+    "start:vercel": "next start",
     "deploy": "vercel deploy",
     "deps": "run-s deps:*",
     "deps:update": "[ -z $GITHUB_ACTIONS ] && yarn add notion-client notion-types notion-utils react-notion-x || echo 'Skipping deps:update on CI'",
@@ -35,7 +39,7 @@
     "fathom-client": "^3.4.1",
     "got": "^12.0.3",
     "isomorphic-unfetch": "^3.1.0",
-    "next": "^12.2.3",
+    "next": "16.2.6",
     "next-api-og-image": "^2.2.1",
     "node-fetch": "^2.6.1",
     "notion-client": "^6.12.6",
@@ -44,9 +48,9 @@
     "p-map": "^5.3.0",
     "p-memoize": "^6.0.1",
     "posthog-js": "^1.20.2",
-    "react": "^17.0.2",
+    "react": "19.2.6",
     "react-body-classname": "^1.3.1",
-    "react-dom": "^17.0.2",
+    "react-dom": "19.2.6",
     "react-notion-x": "^6.12.7",
     "react-tweet-embed": "^2.0.0",
     "react-use": "^17.3.2",
@@ -54,9 +58,12 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.1.0",
-    "@types/node": "^17.0.23",
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@types/node": "22.19.19",
     "@types/node-fetch": "^3.0.3",
-    "@types/react": "^17.0.31",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "cross-env": "^7.0.2",
@@ -66,7 +73,10 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.4.1",
-    "typescript": "^4.4.4"
+    "typescript": "5.9.3",
+    "vinext": "0.0.50",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
   },
   "resolutions": {
     "next-api-og-image/chrome-aws-lambda": "6.0.0",

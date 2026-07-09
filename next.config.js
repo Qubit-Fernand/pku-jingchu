@@ -1,9 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true'
 })
 
-module.exports = withBundleAnalyzer({
+export default withBundleAnalyzer({
   staticPageGenerationTimeout: 300,
   async rewrites() {
     return [
